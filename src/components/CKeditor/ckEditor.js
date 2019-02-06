@@ -15,6 +15,8 @@ export default class Example extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.afterPaste = this.afterPaste.bind(this);
   }
 
 

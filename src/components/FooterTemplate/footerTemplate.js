@@ -1,15 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import { styles } from './footerTemplateCss';
-import CKeditro from "../CKeditor/ckEditor";
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+
+import { styles } from './footerTemplateCss';
+import CKeditro from "../CKeditor/ckEditor";
+import TextInput from '../Reusables/TextField/TextInput';
 
 class FooterTemplate extends React.Component {
 
@@ -21,8 +19,8 @@ class FooterTemplate extends React.Component {
         };
     }
 
-    handleTemplateNameChange = event => {
-        this.setState({ templateName: event.target.value });
+    handleTemplateNameChange = val => {
+        this.setState({ templateName: val });
     };
 
     handleCkdataChange = ckData => {
@@ -45,31 +43,20 @@ class FooterTemplate extends React.Component {
     }
 
     render() {
-        console.log(this.state);
+        // console.log(this.state);
         const { classes } = this.props;
         return (
             <div className={classes.container}>
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
-                        <h3 className={classes.title}>footer Template</h3>
+                        <h3 className={classes.title}>Footer Template</h3>
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControl className={classes.formControl} variant="outlined">
-                            <InputLabel
-                                ref={ref => {
-                                    this.labelRef = ReactDOM.findDOMNode(ref);
-                                }}
-                                htmlFor="component-outlined"
-                            >
-                                Footer Template Name
-                    </InputLabel>
-                            <OutlinedInput
-                                id="component-outlined"
-                                value={this.state.templateName}
-                                onChange={this.handleTemplateNameChange}
-                                labelWidth={this.labelRef ? this.labelRef.offsetWidth : 0}
-                            />
-                        </FormControl>
+                        <TextInput
+                            placeholder="Footer Template Name"
+                            handleTextChange={this.handleTemplateNameChange}
+                            inputValue={this.state.templateName}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <CKeditro ckContent={this.state.ckData} CKData={this.handleCkdataChange} />

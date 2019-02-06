@@ -1,4 +1,7 @@
 export const styles = {
+    linkDesign: {
+        textDecoration: 'none'
+    },
     root: {
         flexGrow: 1,
     },
@@ -10,6 +13,6 @@ export const styles = {
         width: 110
     },
     dropdown: {
-        marginLeft :50
+        marginLeft: 50
     }
 };
