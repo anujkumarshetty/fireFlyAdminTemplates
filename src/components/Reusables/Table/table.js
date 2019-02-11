@@ -1,20 +1,29 @@
 import React, { Component, Fragment } from 'react';
 import $ from "jquery";
-import DataTable from 'datatables'
+import DataTable from 'datatables';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './table.css'
 import Icon from '@material-ui/core/Icon';
 
 class Table extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tableData: this.props.tableData
+        }
+    }
 
     componentDidMount() {
+        console.log("did mount");
         $(document).ready(function () {
-            $('#dtVerticalScrollExample').DataTable({
+            $('#dtDynamicVerticalScrollExample').DataTable({
                 "scrollY": "300px",
                 "scrollCollapse": true,
+                "paging": false
             });
             $('.dataTables_length').addClass('bs-select');
         });
+
     }
 
     handleDelete = (e, index) => {
@@ -25,9 +34,10 @@ class Table extends Component {
     }
 
     render() {
+        console.log(this.state);
         return (
             <div>
-                <table id="dtVerticalScrollExample" className="table table-striped table-bordered table-sm" cellSpacing="0" width="100%">
+                <table id="dtDynamicVerticalScrollExample" className="table table-striped table-bordered table-sm" cellSpacing="0" width="100%">
                     <thead>
                         <tr>
                             {
@@ -46,7 +56,7 @@ class Table extends Component {
                         {
                             this.props.tableData ? this.props.tableData.map((item, index) => {
                                 return (
-                                    <tr key={item.letterType + item.category + item.subCategory}>
+                                    <tr key={item.letterType + index}>
                                         <td>{item.letterType}</td>
                                         <td>{item.category}</td>
                                         <td>{item.subCategory}</td>
@@ -69,3 +79,4 @@ class Table extends Component {
 }
 
 export default Table;
+

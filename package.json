@@ -8,6 +8,7 @@
     "bootstrap": "^4.2.1",
     "datatables": "^1.10.18",
     "jquery": "^3.3.1",
+    "mdbreact": "^4.10.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-ckeditor-component": "^1.1.0",
