@@ -25,6 +25,7 @@ class DialogComponent extends React.Component {
     };
 
     render() {
+        console.log(this.props.viewImageData);
         return (
             <div>
                 {/* <Button onClick={this.handleClickOpen('paper')}>scroll=paper</Button>
@@ -39,7 +40,7 @@ class DialogComponent extends React.Component {
                     <DialogContent>
                         <DialogContentText>
                             {this.props.viewImageData ? <iframe width="800px" height="800px" src={this.props.viewImageData}>
-                                <p>Your browser does not support iframes.</p>
+
                             </iframe> : "No Content.!!"}
                         </DialogContentText>
                     </DialogContent>

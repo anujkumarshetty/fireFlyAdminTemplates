@@ -1,4 +1,5 @@
 export const styles = {
+    container: {},
     linkDesign: {
         textDecoration: 'none'
     },

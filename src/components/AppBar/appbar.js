@@ -14,7 +14,9 @@ import logo from "../../assets/imgs/candelalabslogo.png";
 import { styles } from './appbarCss';
 import HeaderTemplate from "../HeaderTemplate/headerTemplate";
 import FooterTemplate from '../FooterTemplate/footerTemplate';
-import LetterTemplate from '../LetterTemplate/letterTemplate'
+import LetterTemplate from '../LetterTemplate/letterTemplate';
+import SignatureTemplate from '../SignatureTemplate/signatureTemplate';
+
 
 class MenuAppBar extends React.Component {
 
@@ -45,13 +47,14 @@ class MenuAppBar extends React.Component {
         return (
             <Router>
                 <div className={classes.root}>
+              
                     <AppBar position="static" color="primary">
                         <Toolbar>
                             <IconButton color="inherit" aria-label="Menu">
                                 <img src={logo} className={classes.logo} alt="Candelalabs" set="" />
                             </IconButton>
                             <Typography variant="h5" color="inherit" className={classes.grow}>
-                            Dotsphere Correspondence Manager- Template Administration
+                                Dotsphere Correspondence Manager- Template Administration
                         </Typography>
 
                             <div className={classes.dropdown}>
@@ -93,6 +96,7 @@ class MenuAppBar extends React.Component {
                         <Route path="/headerTemplate" component={HeaderTemplate} />
                         <Route path="/footerTemplate" component={FooterTemplate} />
                         <Route path="/letterTemplate" component={LetterTemplate} />
+                        <Route path="/signatureTemplate" component={SignatureTemplate} />
                     </div>
                 </div>
             </Router>

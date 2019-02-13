@@ -38,7 +38,7 @@ class TextInput extends React.Component {
                     id="component-outlined"
                     value={this.props.inputValue || ""}
                     onChange={(e) => this.handleInputChange(e)}
-                    labelWidth={this.labelRef ? this.labelRef.offsetWidth : 0}
+                    labelWidth={this.props.labelWidth}
                 />
             </FormControl>
         );

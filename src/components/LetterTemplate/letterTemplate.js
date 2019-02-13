@@ -15,14 +15,22 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { styles } from './letterTemplateCss';
 import TextInput from '../Reusables/TextField/TextInput';
-// import Table from '../Reusables/Table/table';
 import preview from '../../assets/imgs/preview.png'
 
+import axios from 'axios';
 import $ from "jquery";
-import DataTable from 'datatables';
+import DataTable from 'datatables'; //Do not comment this import, It is being used for table representation.
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './table.css'
 import DialogComponent from '../Reusables/Dialog/dialog';
+import {
+    GET_ALL_LETTER_TEMPLATES,
+    CREATE_A_LETTER_TEMPLATE,
+    DELETE_A_LETTER_TEMPLATE,
+    UPDATE_LETTER_TEMPLATE,
+    GET_SINGLE_LETTER_TEMPLATE
+} from '../Config/apiConfig'
+import { resolve, reject } from 'q';
 
 class LetterTemplate extends React.Component {
 
@@ -42,22 +50,22 @@ class LetterTemplate extends React.Component {
             viewImageData: "",
             columnNames: ["Letter Type", "Category", "Sub Category", "Template Type", "Actions"],
             apiData: [
+                {
+                    letterName: "template1",
+                    category: 'dataentry',
+                    subCategory: 'concent',
+                    templateType: "LETTER",
+                    letterTemplate: ""
+                },
                 // {
-                //     letterType: "auj",
-                //     category: 'dataentry',
-                //     subCategory: 'concent',
-                //     templateType: "LETTER",
-                //     letterTemplate: ""
-                // },
-                // {
-                //     letterType: "backdating1234",
+                //     letterName: "backdating1234",
                 //     category: '234dataentry',
                 //     subCategory: 'concent234',
                 //     templateType: "EMAIL",
                 //     letterTemplate: ""
                 // },
                 // {
-                //     letterType: "skye",
+                //     letterName: "skye",
                 //     category: '234dataentry',
                 //     subCategory: 'concent234',
                 //     templateType: "EMAIL",
@@ -66,20 +74,33 @@ class LetterTemplate extends React.Component {
             ]
         };
 
+        this.handleSave = this.handleSave.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+
     }
     componentDidMount() {
         console.log("did mount");
+
+        axios.get(GET_ALL_LETTER_TEMPLATES)
+            .then(res => {
+                const persons = res.data;
+                console.log(persons)
+                this.setState({
+                    apiData: res.data
+                });
+            });
+
         $(document).ready(function () {
             $('#dtDynamicVerticalScrollExample').DataTable({
                 "scrollY": "300px",
                 "scrollCollapse": true,
                 "paging": false,
+                "sorting": false,
                 "searching": false
             });
             $('.dataTables_length').addClass('bs-select');
-
-
         });
+
 
     }
 
@@ -123,7 +144,8 @@ class LetterTemplate extends React.Component {
         let data = e.target;
         const reader = new FileReader();
         if (data.files.length) {
-            reader.readAsDataURL(data.files[0]);
+            // reader.readAsDataURL(data.files[0]);
+            reader.readAsText(data.files[0], "UTF-8");
         }
 
         reader.onload = function (e) {
@@ -153,11 +175,35 @@ class LetterTemplate extends React.Component {
 
     }
 
-    handleDelete = (e, index) => {
-        let state = [...this.state.apiData];
-        state.splice(index, 1);
-        this.setState({ apiData: state });
-        this.requestSnackBar("Template deleted successfully");
+    async handleDelete(e, index) {
+        // let state = [...this.state.apiData];
+        // state.splice(index, 1);
+        // this.setState({ apiData: state });
+
+        let deletePromise = new Promise((resolve, reject) => {
+            axios.delete(DELETE_A_LETTER_TEMPLATE + this.state.apiData[index].correspondenceId)
+                .then(res => {
+                    console.log(res.data);
+                    this.setState({
+                        apiData: res.data
+                    });
+                    this.requestSnackBar("Template deleted successfully");
+                    resolve(res.data);
+                })
+        })
+
+        // await deletePromise.then(() => {
+        //     axios.get(GET_ALL_LETTER_TEMPLATES)
+        //         .then(res => {
+        //             const persons = res.data;
+        //             console.log(persons)
+        //             this.setState({
+        //                 apiData: res.data
+        //             });
+        //         });
+        //     this.handleClearData(false);
+        //     this.requestSnackBar("Template updated successfully");
+        // });
     }
 
     handleEdit = (e, index) => {
@@ -165,7 +211,7 @@ class LetterTemplate extends React.Component {
         let state = [...this.state.apiData];
         let newState = state.slice(index, index + 1);
         this.setState({
-            templateName: newState[0].letterType,
+            templateName: newState[0].letterName,
             category: newState[0].category,
             subCategory: newState[0].subCategory,
             templateType: newState[0].templateType,
@@ -177,7 +223,8 @@ class LetterTemplate extends React.Component {
     handelViewImage = (e, index) => {
         console.log(index);
         let apiImage = this.state.apiData[index].letterTemplate;
-        this.setState({ viewImageData: apiImage, openDialog: true })
+
+        this.setState({ viewImageData: `data:text/html;base64,${window.btoa(unescape(encodeURIComponent(apiImage)))}`, openDialog: true })
     }
 
     handlePreviewButton = (e) => {
@@ -189,31 +236,112 @@ class LetterTemplate extends React.Component {
         this.setState({ openDialog: false });
     };
 
-    handleSave = () => {
 
-        let editedOrCreateData = {
-            letterType: this.state.templateName,
-            category: this.state.category,
-            subCategory: this.state.subCategory,
-            templateType: this.state.templateType,
-            letterTemplate: this.state.imageData
-        }
-        let newState = [...this.state.apiData];
+    async handleSave() {
+
+        // let editedOrCreateData = {
+        //     letterName: this.state.templateName,
+        //     category: this.state.category,
+        //     subCategory: this.state.subCategory,
+        //     templateType: this.state.templateType,
+        //     letterTemplate: this.state.imageData
+        // }
+        // let newState = [...this.state.apiData];
+
+        // if (this.state.index !== null) {
+        //     newState.splice(this.state.index, 1);
+        //     newState.splice(this.state.index, 0, editedOrCreateData)
+        //     this.setState({ apiData: newState })
+        //     this.requestSnackBar("Template saved successfully");
+        //     this.handleClearData(false);
+        // } else {
+        //     newState.push(editedOrCreateData);
+        //     this.setState({ apiData: newState });
+        //     this.requestSnackBar("New template added successfully");
+        //     this.handleClearData(false);
+        // }
+
 
         if (this.state.index !== null) {
-            newState.splice(this.state.index, 1);
-            newState.splice(this.state.index, 0, editedOrCreateData)
-            this.setState({ apiData: newState })
-            this.requestSnackBar("Template saved successfully");
-            this.handleClearData(false);
+
+            const updateData = {
+                category: this.state.category,
+                // correspondence: null,
+                correspondenceId: 700,
+                indexClass: "NOT USED",
+                isActive: 1,
+                letterName: this.state.templateName,
+                letterTemplate: this.state.imageData,
+                subCategory: this.state.subCategory,
+                templateType: this.state.templateType
+            }
+            let updatePromise = new Promise((resolve, reject) => {
+                axios.put(UPDATE_LETTER_TEMPLATE + this.state.apiData[this.state.index].correspondenceId, updateData)
+                    // axios.get(GET_SINGLE_LETTER_TEMPLATE)
+                    .then(res => {
+                        console.log("inside promise");
+                        console.log(res.data);
+                        this.setState({
+                            apiData: res.data
+                        });
+                        this.requestSnackBar("Template updated successfully");
+                        resolve(res.data);
+                    })
+            })
+
+            // await updatePromise.then(() => {
+            //     axios.get(GET_ALL_LETTER_TEMPLATES)
+            //         .then(res => {
+            //             const persons = res.data;
+            //             console.log(persons)
+            //             this.setState({
+            //                 apiData: res.data
+            //             });
+            //         });
+            //     this.handleClearData(false);
+            //     this.requestSnackBar("Template updated successfully");
+            // });
+
+
         } else {
-            newState.push(editedOrCreateData);
-            this.setState({ apiData: newState });
-            this.requestSnackBar("New template added successfully");
-            this.handleClearData(false);
+
+            const createData = {
+                category: this.state.category,
+                indexClass: "NOT USED",
+                isActive: 1,
+                letterName: this.state.templateName,
+                letterTemplate: this.state.imageData,
+                subCategory: this.state.subCategory,
+                templateType: this.state.templateType
+            }
+            let promise = new Promise((resolve, reject) => {
+                axios.post(CREATE_A_LETTER_TEMPLATE, createData)
+                    // axios.get(GET_SINGLE_LETTER_TEMPLATE)
+                    .then(res => {
+                        console.log("inside promise");
+                        console.log(res.data);
+                        this.setState({
+                            apiData: res.data
+                        });
+                        this.requestSnackBar("Template saved successfully");
+                        resolve(res.data);
+                    })
+            })
+
+            // await promise.then(() => {
+            //     axios.get(GET_ALL_LETTER_TEMPLATES)
+            //         .then(res => {
+            //             const persons = res.data;
+            //             console.log(persons)
+            //             this.setState({
+            //                 apiData: res.data
+            //             });
+            //         });
+            //     this.handleClearData(false);
+            //     this.requestSnackBar("Template saved successfully");
+            // });
 
         }
-
     }
 
     handInputSearchField = (e) => {
@@ -234,6 +362,9 @@ class LetterTemplate extends React.Component {
 
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
+                        <br /><br /><br />
+                    </Grid>
+                    <Grid item xs={12}>
                         <h3 className={classes.title}>Create Or Edit Letter Template</h3>
                     </Grid>
                     <Grid item xs={12}>
@@ -243,6 +374,7 @@ class LetterTemplate extends React.Component {
                                 placeholder="Letter Template Name"
                                 handleTextChange={this.handleTemplateNameChange}
                                 inputValue={this.state.templateName}
+                                labelWidth={160}
                             />
                         </div>
                     </Grid>
@@ -252,6 +384,7 @@ class LetterTemplate extends React.Component {
                             placeholder="Category"
                             handleTextChange={this.handleTemplateNameChange}
                             inputValue={this.state.category}
+                            labelWidth={65}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -260,6 +393,7 @@ class LetterTemplate extends React.Component {
                             placeholder="Sub Category"
                             handleTextChange={this.handleTemplateNameChange}
                             inputValue={this.state.subCategory}
+                            labelWidth={95}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -306,7 +440,6 @@ class LetterTemplate extends React.Component {
                             this.state.apiData.length > 0 ?
                                 <div>
                                     <label style={{ float: "right" }}>Search :  &nbsp; <input type="text" id="myInput" value={this.state.inputVal} onChange={this.handInputSearchField} /></label>
-
                                     <table id="dtDynamicVerticalScrollExample" className="table table-striped table-bordered table-sm" cellSpacing="0" width="100%">
                                         <thead>
                                             <tr>
@@ -326,8 +459,8 @@ class LetterTemplate extends React.Component {
                                             {
                                                 this.state.apiData ? this.state.apiData.map((item, index) => {
                                                     return (
-                                                        <tr key={item.letterType}>
-                                                            <td>{item.letterType}</td>
+                                                        <tr key={item.letterName}>
+                                                            <td>{item.letterName}</td>
                                                             <td>{item.category}</td>
                                                             <td>{item.subCategory}</td>
                                                             <td>{item.templateType}</td>
@@ -369,7 +502,7 @@ class LetterTemplate extends React.Component {
                             aria-label="Close"
                             color="inherit"
                             className={classes.close}
-                            onClick={this.handleClose}
+                            onClick={this.handleSnackBarClose}
                         >
                             <CloseIcon />
                         </IconButton>,

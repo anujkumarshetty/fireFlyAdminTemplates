@@ -5,7 +5,7 @@ import CKEditor from "react-ckeditor-component";
 
 
 const toolbarConfig = {
-  height: '250px',
+  height: '180px',
   toolbar: 'Full',
   allowedContent: true,
   startupFocus: true,
