@@ -88,7 +88,8 @@ class LetterTemplate extends React.Component {
                 this.setState({
                     apiData: res.data
                 });
-            });
+            })
+            .catch(error => this.requestSnackBar("Error: Cannot establish a connection to server, Please retry again"))
 
         $(document).ready(function () {
             $('#dtDynamicVerticalScrollExample').DataTable({
@@ -123,10 +124,9 @@ class LetterTemplate extends React.Component {
         }
 
     };
-
     requestSnackBar = (message) => {
         this.setState({ open: true, message })
-        setTimeout(this.handleSnackBarClose, 3000);
+        setTimeout(this.handleSnackBarClose, 6000);
     }
 
     handleSnackBarClose = (event, reason) => {
@@ -190,6 +190,7 @@ class LetterTemplate extends React.Component {
                     this.requestSnackBar("Template deleted successfully");
                     resolve(res.data);
                 })
+                .catch(error => this.requestSnackBar("Error: Could not delete, Please retry again"))
         })
 
         // await deletePromise.then(() => {
@@ -284,9 +285,12 @@ class LetterTemplate extends React.Component {
                         this.setState({
                             apiData: res.data
                         });
+                        this.handleClearData(false);
                         this.requestSnackBar("Template updated successfully");
                         resolve(res.data);
                     })
+                    .catch(error => this.requestSnackBar("Error: Problem updating a template, Please retry again"))
+
             })
 
             // await updatePromise.then(() => {
@@ -323,9 +327,12 @@ class LetterTemplate extends React.Component {
                         this.setState({
                             apiData: res.data
                         });
+                        this.handleClearData(false);
                         this.requestSnackBar("Template saved successfully");
                         resolve(res.data);
                     })
+                    .catch(error => this.requestSnackBar("Error: Problem creating a template, Please retry again"))
+
             })
 
             // await promise.then(() => {

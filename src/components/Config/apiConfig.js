@@ -1,4 +1,5 @@
-const domain = "http://192.168.8.174:8080";
+// const domain = "http://192.168.8.174:8080";
+const domain = "http://localhost:8080";
 
 // Header Template Api's
 export const GET_ALL_HEADER = `${domain}/header/show/60`;

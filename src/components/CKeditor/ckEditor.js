@@ -9,6 +9,7 @@ const toolbarConfig = {
   toolbar: 'Full',
   allowedContent: true,
   startupFocus: true,
+  removePlugins: 'elementspath'
 };
 
 export default class Example extends Component {

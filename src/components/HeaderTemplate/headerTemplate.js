@@ -57,7 +57,7 @@ class HeaderTemplate extends React.Component {
 
     requestSnackBar = (message) => {
         this.setState({ open: true, message })
-        setTimeout(this.handleSnackBarClose, 3000);
+        setTimeout(this.handleSnackBarClose, 6000);
     }
 
     handleSnackBarClose = (event, reason) => {
@@ -77,6 +77,7 @@ class HeaderTemplate extends React.Component {
                     ckData: res.data.headerContent,
                 });
             })
+            .catch(error => this.requestSnackBar("Error: Cannot establish a connection to server, Please retry again"));
     }
 
 

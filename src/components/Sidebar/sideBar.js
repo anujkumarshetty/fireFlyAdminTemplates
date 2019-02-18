@@ -17,10 +17,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import CreditCard from '@material-ui/icons/CreditCard';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import Receipt from '@material-ui/icons/Receipt';
 import BorderColor from '@material-ui/icons/BorderColor';
-import MailIcon from '@material-ui/icons/Mail';
 
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import logo from "../../assets/imgs/candelalabslogo.png";
@@ -36,6 +34,10 @@ const drawerWidth = 240;
 const styles = theme => ({
     root: {
         display: 'flex',
+    },
+    logo: {
+        width: 110,
+        marginRight: '60px'
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -93,6 +95,9 @@ const styles = theme => ({
         flexGrow: 1,
         padding: theme.spacing.unit * 3,
     },
+    linkDesign: {
+       
+    }
 });
 
 class MiniDrawer extends React.Component {
@@ -133,8 +138,9 @@ class MiniDrawer extends React.Component {
                                 <MenuIcon />
                             </IconButton>
                             <Typography variant="h6" color="inherit" noWrap>
-                                Dotsphere Correspondence Manager- Template Administration
-            </Typography>
+
+                                Correspondence Manager- Template Administration
+                            </Typography>
                         </Toolbar>
                     </AppBar>
                     <Drawer
@@ -152,19 +158,14 @@ class MiniDrawer extends React.Component {
                         open={this.state.open}
                     >
                         <div className={classes.toolbar}>
+                            <img src={logo} className={classes.logo} alt="Candelalabs" set="" />
                             <IconButton onClick={this.handleDrawerClose}>
                                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                             </IconButton>
                         </div>
+
                         <Divider />
                         <List>
-                            {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                                <ListItem button key={text}>
-                                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItem>
-                            ))} */}
-
                             <Link to="headerTemplate" className={classes.linkDesign}>
                                 <ListItem button >
                                     <ListItemIcon><CreditCard /></ListItemIcon>

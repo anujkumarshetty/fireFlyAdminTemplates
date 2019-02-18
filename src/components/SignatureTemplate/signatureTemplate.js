@@ -17,7 +17,7 @@ import { styles } from './signatureTemplateCss';
 import TextInput from '../Reusables/TextField/TextInput';
 import preview from '../../assets/imgs/preview.png';
 import Checkbox from '@material-ui/core/Checkbox';
-
+import axios from 'axios'
 import $ from "jquery";
 import DataTable from 'datatables'; //Do not comment this import, It is being used for table representation.
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -493,6 +493,28 @@ class SignatureTemplate extends Component {
             });
             $('.dataTables_length').addClass('bs-select');
         });
+
+        function* generateId() {
+            let id = 0;
+            while (true) {
+              yield id++;
+            }
+            // yield 'anuj';
+            // yield 'kumar';
+            // yield 'shetty';
+        }
+
+        let gen = generateId();
+        let gen2 = generateId();
+        console.log(gen.next().value)
+        console.log(gen.next().value)
+        console.log(gen.next().value)
+        console.log(gen.next().value)
+        console.log(gen2.next().done)
+        console.log(gen2.next().done)
+        console.log(gen2.next().done)
+        console.log(gen2.next().done)
+
     }
 
     handleTemplateNameChange = (val, id) => {
@@ -603,28 +625,58 @@ class SignatureTemplate extends Component {
 
     handleSave = () => {
 
-        let editedOrCreateData = {
-            letterType: this.state.templateName,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            templateType: this.state.templateType,
-            letterTemplate: this.state.imageData
-        }
-        let newState = [...this.state.apiData];
+        // let editedOrCreateData = {
+        //     letterType: this.state.templateName,
+        //     firstName: this.state.firstName,
+        //     lastName: this.state.lastName,
+        //     templateType: this.state.templateType,
+        //     letterTemplate: this.state.imageData
+        // }
+        // let newState = [...this.state.apiData];
 
-        if (this.state.index !== null) {
-            newState.splice(this.state.index, 1);
-            newState.splice(this.state.index, 0, editedOrCreateData)
-            this.setState({ apiData: newState })
-            this.requestSnackBar("Template saved successfully");
-            this.handleClearData(false);
-        } else {
-            newState.push(editedOrCreateData);
-            this.setState({ apiData: newState });
-            this.requestSnackBar("New template added successfully");
-            this.handleClearData(false);
+        // if (this.state.index !== null) {
+        //     newState.splice(this.state.index, 1);
+        //     newState.splice(this.state.index, 0, editedOrCreateData)
+        //     this.setState({ apiData: newState })
+        //     this.requestSnackBar("Template saved successfully");
+        //     this.handleClearData(false);
+        // } else {
+        //     newState.push(editedOrCreateData);
+        //     this.setState({ apiData: newState });
+        //     this.requestSnackBar("New template added successfully");
+        //     this.handleClearData(false);
 
+        // }
+
+
+
+        const createData = {
+            "firstName": "Shivukumaar1",
+            "lastName": "Malafur1",
+            "signature": "",
+
+            "designation": null,
+            "mimeType": "image/png",
+            "tdusermaster": {
+                "userName": "vikrant"
+            },
+            "signatureMappings": []
         }
+
+
+        axios.post("http://192.168.8.174:8080/createSignatureMaster/", createData)
+            // axios.get(GET_SINGLE_LETTER_TEMPLATE)
+            .then(res => {
+                console.log("inside promise");
+                console.log(res.data);
+                this.setState({
+                    apiData: res.data
+                });
+                this.handleClearData(false);
+                this.requestSnackBar("Template saved successfully");
+                // resolve(res.data);
+            })
+            .catch(error => console.log(error));
 
     }
 
@@ -653,7 +705,7 @@ class SignatureTemplate extends Component {
         return (
             <div className={classes.container}>
                 <Grid container spacing={24}>
-                <Grid item xs={12}>
+                    <Grid item xs={12}>
                         <br /><br /><br />
                     </Grid>
                     <Grid item xs={12}>
@@ -757,7 +809,7 @@ class SignatureTemplate extends Component {
                                             {
                                                 this.state.apiData ? this.state.apiData.map((item, index) => {
                                                     return (
-                                                        <tr key={item.firstName} style={{ textAlign: "center" }}>
+                                                        <tr key={item.letterType} style={{ textAlign: "center" }}>
                                                             {/* <td>{item.letterType}</td> */}
                                                             <td><Checkbox
                                                                 checked={true}
